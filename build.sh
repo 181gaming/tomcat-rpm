@@ -9,11 +9,6 @@ MICRO_VERSION=$(awk '/%define micro_version/ {print $3}' ${SPEC})
 VERSION="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}"
 
 SOURCE_URL="http://www.apache.org/dist/tomcat/tomcat-${MAJOR_VERSION}/v${VERSION}/bin/apache-tomcat-${VERSION}.tar.gz"
-SOURCE1=$(awk '/Source1: / {print $2}' ${SPEC})
-SOURCE2=$(awk '/Source2: / {print $2}' ${SPEC})
-SOURCE3=$(awk '/Source3: / {print $2}' ${SPEC})
-SOURCE5=$(awk '/Source5: / {print $2}' ${SPEC}) # setenv.sh
-SOURCE7=$(awk '/Source7: / {print $2}' ${SPEC}) # setenv.sh
 
 which wget > /dev/null
 if [ $? -ne 0 ]; then
@@ -48,7 +43,7 @@ sed -i 's/^\(JAVA_HOME=\)\(.*\)$/\1"'${JHOME_ESCAPED}'"/' ${TCINIT}
 echo "Creating RPM build path structure..."
 mkdir -p rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS,tmp}
 
-cp ${SOURCE1} ${SOURCE2} ${SOURCE3} ${SOURCE5} ${SOURCE7} rpmbuild/SOURCES/
+cp src/* rpmbuild/SOURCES/
 
 echo "Downloading sources..."
 cd rpmbuild/SOURCES
@@ -57,6 +52,9 @@ if [ -f apache-tomcat-${VERSION}.tar.gz ]; then
   # package to start with.
   rm apache-tomcat-${VERSION}.tar.gz
 fi
+
+cd src
+
 wget ${SOURCE_URL}
 
 # Thank you for the wackadoo packaging Apache.
@@ -79,6 +77,8 @@ B=$(find . -maxdepth 1 -type d -name 'commons-daemon*')
 mv ${B:2} commons-daemon
 tar cf - commons-daemon | gzip -- - > commons-daemon-native.tar.gz
 rm -rf commons-daemon
+
+cd -
 
 if [ -f ${CWD}/gpg-env ]; then
   echo "Building RPM with GPG signing..."
