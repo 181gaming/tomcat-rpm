@@ -1,3 +1,5 @@
 rpmbuild/
 *.swp
 gpg-env
+*.log
+*.rpm
