@@ -1,5 +1,7 @@
-rpmbuild/
-*.swp
-gpg-env
+.vagrant
 *.log
 *.rpm
+*.swp
+dist
+gpg-env
+rpmbuild/
