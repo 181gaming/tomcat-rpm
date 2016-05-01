@@ -1,6 +1,14 @@
 %define major_version 8
 %define minor_version 0
+# EL6 Doesn't support anything greater than version 30 due to incompatibilities
+# with the native OpenSSL
+
+%if 0%{?el6:1}
+%define micro_version 30
+%else
 %define micro_version 33
+%endif
+
 %define appname tomcat
 %define distname %{name}-%{version}
 
@@ -20,7 +28,7 @@
 %define appuid 91
 %define appgid 91
 
-%if 0%{?rhel} >= 7 || 0%{?fedora} >= 20
+%if 0%{?rhel}%{?fedora}
 %define _java_home %{_jvmdir}/java
 %endif
 
@@ -52,20 +60,24 @@ BuildArch: x86_64
 
 # The _jdk_require is passed via `rpmbuild --define "_jdk_require ..."`
 %if 0%{?rhel}%{?fedora}
+Requires: java >= 1.7
 Requires: java-devel >= 1.7
 %else
 Requires: jdk >= 1.7
 %endif
-Requires: apr >= 0:1.1.29
+
+Requires: apr >= 0:1.4.0
 Requires: libtool
 Requires: libcap
 
 %if 0%{?rhel}%{?fedora}
+BuildRequires: java >= 1.7
 BuildRequires: java-devel >= 1.7
 %else
 BuildRequires: jdk >= 1.7
 %endif
-BuildRequires: apr-devel >= 0:1.1.29
+
+BuildRequires: apr-devel >= 0:1.4.0
 BuildRequires: openssl-devel >= 0:0.9.7
 BuildRequires: autoconf, libtool, doxygen
 BuildRequires: libcap-devel
@@ -111,7 +123,12 @@ Javadoc generated documentation for Apache Tomcat.
 cd bin
 tar -xzf tomcat-native.tar.gz
 tcnative=`ls -d tomcat-native-*-src | head -1`
+%if 0%{?el6:1}
+ln -s $tcnative/jni tcnative
+%else
 ln -s $tcnative tcnative
+%endif
+
 cd tcnative/native
 ./configure --with-apr=/usr/bin/apr-1-config --with-ssl=yes --with-java-home=%{_java_home}
 make -I%{_java_home}/include/linux
@@ -151,11 +168,13 @@ rm -rf %{buildroot}
 %{__install} -d -m 0775 %{buildroot}%{homedir}
 %{__install} -d -m 0775 %{buildroot}%{tempdir}
 %{__install} -d -m 0775 %{buildroot}%{workdir}
+
 %if 0%{?rhel} >= 7 || 0%{?fedora} >= 20
 %{__install} -d -m 0755 %{buildroot}%{_unitdir}
 %else
-%{__install} -d -m 0755 %{buildroot}%{_initrddir}
+%{__install} -d -m 0755 %{buildroot}%{_initddir}
 %endif
+
 %{__install} -d -m 0755 %{buildroot}%{_libexecdir}/%{name}
 
 pushd %{buildroot}/%{homedir}
@@ -194,15 +213,18 @@ popd
     > %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 %{__install} -m 0644 %{SOURCE23} \
     %{buildroot}%{_sbindir}/%{name}
+
 %if 0%{?rhel} >= 7 || 0%{?fedora} >= 20
 %{__install} -m 0644 %{SOURCE16} \
     %{buildroot}%{_unitdir}/%{name}-jsvc.service
 %{__install} -m 0644 %{SOURCE7} \
     %{buildroot}%{_unitdir}/%{name}.service
+%{__install} -m 0644 %{SOURCE18} %{buildroot}%{_unitdir}/%{name}@.service
 %else
 %{__install} -m 0644 %{SOURCE2} \
-    %{buildroot}%{_sysconfdir}/init.d/%{name}
+    %{buildroot}%{_initddir}/%{name}
 %endif
+
 %{__sed} -e "s|\@\@\@TCLOG\@\@\@|%{logdir}|g" %{SOURCE3} \
     > %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
 %{__sed} -e "s|\@\@\@TCHOME\@\@\@|%{homedir}|g" \
@@ -217,7 +239,6 @@ popd
 %{__install} -m 0644 %{SOURCE15} %{buildroot}%{_libexecdir}/%{name}/functions
 %{__install} -m 0644 %{SOURCE19} %{buildroot}%{_libexecdir}/%{name}/preamble
 %{__install} -m 0644 %{SOURCE20} %{buildroot}%{_libexecdir}/%{name}/server
-%{__install} -m 0644 %{SOURCE18} %{buildroot}%{_unitdir}/%{name}@.service
 
 # Substitute libnames in catalina-tasks.xml
 sed -i \
@@ -240,6 +261,9 @@ cat > %{buildroot}%{_prefix}/lib/tmpfiles.d/%{name}.conf <<EOF
 f %{_localstatedir}/run/%{name}.pid 0644 tomcat tomcat -
 EOF
 
+chmod +x %{buildroot}%{bindir}/*.sh
+chmod +x %{buildroot}%{bindir}/jsvc
+
 %clean
 %{__rm} -rf %{buildroot}
 
@@ -258,12 +282,14 @@ EOF
 %preun
 %{__rm} -rf %{workdir}/* %{tempdir}/*
 if [ "$1" = "0" ]; then
+
 %if 0%{?rhel} >= 7 || 0%{?fedora} >= 20
 %systemd_preun %{name}.service
 %else
-  %{_initrddir}/%{name} stop >/dev/null 2>&1
+  %{_initddir}/%{name} stop >/dev/null 2>&1
   /sbin/chkconfig --del %{name}
 %endif
+
 fi
 /sbin/ldconfig
 
@@ -273,19 +299,24 @@ fi
 %endif
 
 %files
+%{bindir}
+%{homedir}/webapps
+
 %defattr(0664,root,tomcat,0755)
 %doc {LICENSE,NOTICE,RELEASE*}
 %{basedir}
 %attr(0755,root,root) %{_bindir}/%{name}-digest
 %attr(0755,root,root) %{_bindir}/%{name}-tool-wrapper
 %attr(0755,root,root) %{_sbindir}/%{name}
+
 %if 0%{?rhel} >= 7 || 0%{?fedora} >= 20
 %attr(0644,root,root) %{_unitdir}/%{name}-jsvc.service
 %attr(0644,root,root) %{_unitdir}/%{name}.service
 %attr(0644,root,root) %{_unitdir}/%{name}@.service
 %else
-%attr(0755 root root) %{_initrddir}/%{appname}
+%attr(0755 root root) %{_initddir}/%{name}
 %endif
+
 %attr(0755,root,root) %dir %{_libexecdir}/%{name}
 %attr(0755,root,root) %dir %{_localstatedir}/lib/tomcats
 %attr(0644,root,root) %{_libexecdir}/%{name}/functions
@@ -318,10 +349,8 @@ fi
 %attr(0664,tomcat,tomcat) %config(noreplace) %{confdir}/web.xml
 %dir %{homedir}
 %{_prefix}/lib/tmpfiles.d/%{name}.conf
-%{bindir}
 %{homedir}/lib
 %{homedir}/temp
-%{homedir}/webapps
 %{homedir}/work
 %{homedir}/logs
 %{homedir}/conf

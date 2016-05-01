@@ -8,7 +8,7 @@
 source /etc/rc.d/init.d/functions
 
 APPNAME=tomcat8
-USER=tomcat8
+USER=tomcat
 LOCKFILE="/var/lock/subsys/$APPNAME"
 
 TOMCAT_HOME="/usr/share/$APPNAME"
@@ -45,21 +45,26 @@ function start_server {
   status -p ${JSVC_PID} ${APPNAME} > /dev/null && failure && exit
   
   source ${TOMCAT_HOME}/bin/setenv.sh
-  ${TOMCAT_HOME}/bin/jsvc \
-    -pidfile ${JSVC_PID} \
-    -procname ${APPNAME} \
-    -user ${USER} \
-    -home ${JAVA_HOME} \
-    -classpath ${JSVC_CP} \
-    -outfile ${JSVC_OUT} \
-    -errfile ${JSVC_ERR} \
-    -Dcatalina.home=${CATALINA_HOME} \
-    -Dcatalina.base=${CATALINA_BASE} \
-    -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager \
-    ${JSVC_LOGGING} ${JAVA_OPTS} ${CATALINA_OPTS} \
-    org.apache.catalina.startup.Bootstrap
+  source /etc/tomcat8/tomcat.conf
+  source /etc/sysconfig/tomcat8
+  daemon /usr/libexec/${APPNAME}/server start >& $CATALINA_OUT 2>&1 &
+
+#  ${TOMCAT_HOME}/bin/jsvc \
+#    -pidfile ${JSVC_PID} \
+#    -procname ${APPNAME} \
+#    -user ${USER} \
+#    -home ${JAVA_HOME} \
+#    -classpath ${JSVC_CP} \
+#    -outfile ${JSVC_OUT} \
+#    -errfile ${JSVC_ERR} \
+#    -Dcatalina.home=${CATALINA_HOME} \
+#    -Dcatalina.base=${CATALINA_BASE} \
+#    -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager \
+#    ${JSVC_LOGGING} ${JAVA_OPTS} ${CATALINA_OPTS} \
+#    org.apache.catalina.startup.Bootstrap
 
   if [ $? -eq 0 ]; then
+    echo $! > $JSVC_PID
     touch ${LOCKFILE} &&  success
   fi
 
@@ -76,8 +81,15 @@ function stop_server {
     exit
   fi
 
-  ${TOMCAT_HOME}/bin/jsvc -pidfile ${JSVC_PID} -stop org.apache.catalinia.startup.Bootstrap
+#  ${TOMCAT_HOME}/bin/jsvc -pidfile ${JSVC_PID} -stop org.apache.catalinia.startup.Bootstrap
+
+  source ${TOMCAT_HOME}/bin/setenv.sh
+  source /etc/tomcat8/tomcat.conf
+  source /etc/sysconfig/tomcat8
+  /usr/libexec/${APPNAME}/server stop >& $CATALINA_OUT 2>&1
+
   if [ $? -eq 0 ]; then
+    rm ${JSVC_PID}
     rm ${LOCKFILE} && success
   else
     failure

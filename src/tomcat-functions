@@ -15,7 +15,7 @@ _save_function() {
 
 run_jsvc(){
     if [ -x /usr/bin/jsvc ]; then
-	TOMCAT_USER="tomcat8"
+	TOMCAT_USER="tomcat"
        	JSVC="/usr/bin/jsvc"
 	
 	JSVC_OPTS="-nodetach -pidfile /var/run/jsvc-tomcat${NAME}.pid -user ${TOMCAT_USER} -outfile ${CATALINA_BASE}/logs/catalina.out -errfile ${CATALINA_BASE}/logs/catalina.out"

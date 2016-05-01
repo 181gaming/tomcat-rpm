@@ -6,9 +6,9 @@ unless File.directory?('dist')
   FileUtils.mkdir('dist')
 end
 
-[
-  '7'
-].each do |ver|
-  %x(mock -r epel-#{ver}-x86_64 --buildsrpm --resultdir=`pwd`/dist --source=`pwd`/src --spec=`pwd`/src/tomcat.spec)
-  %x(mock -r epel-#{ver}-x86_64 --resultdir=`pwd`/dist --no-cleanup-after dist/*el7*.src.rpm)
-end
+%x(mock -r epel-6-x86_64 --buildsrpm --resultdir=`pwd`/dist --source=`pwd`/src --spec=`pwd`/src/tomcat.spec)
+%x(mock -r epel-6-x86_64 --install `pwd`/apr/*4.rpm)
+%x(mock -r epel-6-x86_64 --resultdir=`pwd`/dist --no-clean dist/*el6*.src.rpm)
+
+%x(mock -r epel-7-x86_64 --buildsrpm --resultdir=`pwd`/dist --source=`pwd`/src --spec=`pwd`/src/tomcat.spec)
+%x(mock -r epel-7-x86_64 --resultdir=`pwd`/dist --no-clean dist/*el7*.src.rpm)
