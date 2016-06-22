@@ -1,7 +1,5 @@
 # tomcat-rpm
 
-==========
-
 ## Overview
 
 This project defines a build system for building Apache Tomcat 8.0.x
