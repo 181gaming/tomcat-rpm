@@ -2,6 +2,8 @@
 *.log
 *.rpm
 *.swp
+*.tar.gz
+apr
 dist
 gpg-env
 rpmbuild/

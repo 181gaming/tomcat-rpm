@@ -9,12 +9,12 @@ source /etc/rc.d/init.d/functions
 
 APPNAME=tomcat8
 USER=tomcat
-LOCKFILE="/var/lock/subsys/$APPNAME"
+LOCKFILE="/var/lock/subsys/${APPNAME}"
 
-TOMCAT_HOME="/usr/share/$APPNAME"
-CATALINA_HOME="$TOMCAT_HOME"
-CATALINA_BASE="/var/lib/$APPNAME"
-CATALINA_OUT="/var/log/$APPNAME/catalina.out"
+TOMCAT_HOME="/usr/share/${APPNAME}"
+CATALINA_HOME="${TOMCAT_HOME}"
+CATALINA_BASE="/var/lib/${APPNAME}"
+CATALINA_OUT="/var/log/${APPNAME}/catalina.out"
 CATALINA_PID="/var/run/${APPNAME}/tomcat.pid"
 CATALINA_OPTS="-Xmx512m -Djava.awt.headless=true"
 JAVA_HOME="/usr/lib/jvm/java"
@@ -30,8 +30,8 @@ else
   JSVC_LOGGING="-Dnop"
 fi
 
-if [ -r /etc/sysconfig/$APPNAME ]; then
-  source /etc/sysconfig/$APPNAME
+if [ -r /etc/sysconfig/${APPNAME} ]; then
+  source /etc/sysconfig/${APPNAME}
 fi
 
 export CATALINA_HOME CATALINA_BASE CATALINA_OUT CATALINA_PID CATALINA_OPTS JAVA_HOME
@@ -47,7 +47,14 @@ function start_server {
   source ${TOMCAT_HOME}/bin/setenv.sh
   source /etc/tomcat8/tomcat.conf
   source /etc/sysconfig/tomcat8
-  daemon /usr/libexec/${APPNAME}/server start >& $CATALINA_OUT 2>&1 &
+
+  if [ $(id -u) = "0" ]; then
+    if [ ! -d "/var/run/${APPNAME}" ]; then
+      install -m 0755 -o root -g ${USER} -d /var/run/${APPNAME}
+    fi
+  fi
+
+  daemon /usr/libexec/${APPNAME}/server start >& ${CATALINA_OUT} 2>&1 &
 
 #  ${TOMCAT_HOME}/bin/jsvc \
 #    -pidfile ${JSVC_PID} \
@@ -64,7 +71,7 @@ function start_server {
 #    org.apache.catalina.startup.Bootstrap
 
   if [ $? -eq 0 ]; then
-    echo $! > $JSVC_PID
+    echo $! > ${JSVC_PID}
     touch ${LOCKFILE} &&  success
   fi
 
@@ -86,7 +93,7 @@ function stop_server {
   source ${TOMCAT_HOME}/bin/setenv.sh
   source /etc/tomcat8/tomcat.conf
   source /etc/sysconfig/tomcat8
-  /usr/libexec/${APPNAME}/server stop >& $CATALINA_OUT 2>&1
+  /usr/libexec/${APPNAME}/server stop >& ${CATALINA_OUT} 2>&1
 
   if [ $? -eq 0 ]; then
     rm ${JSVC_PID}
