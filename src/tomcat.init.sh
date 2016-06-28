@@ -7,8 +7,8 @@
 
 source /etc/rc.d/init.d/functions
 
-APPNAME=tomcat8
-USER=tomcat
+APPNAME='tomcat8'
+USER='tomcat'
 LOCKFILE="/var/lock/subsys/${APPNAME}"
 
 TOMCAT_HOME="/usr/share/${APPNAME}"
@@ -16,9 +16,8 @@ CATALINA_HOME="${TOMCAT_HOME}"
 CATALINA_BASE="/var/lib/${APPNAME}"
 CATALINA_OUT="/var/log/${APPNAME}/catalina.out"
 CATALINA_PID="/var/run/${APPNAME}/tomcat.pid"
-CATALINA_OPTS="-Xmx512m -Djava.awt.headless=true"
+#CATALINA_OPTS="-Xmx512m -Djava.awt.headless=true"
 JAVA_HOME="/usr/lib/jvm/java"
-
 
 JSVC_PID="/var/run/${APPNAME}/jsvc.pid"
 JSVC_CP=${TOMCAT_HOME}/bin/commons-daemon.jar:${TOMCAT_HOME}/bin/bootstrap.jar:${TOMCAT_HOME}/bin/tomcat-juli.jar
@@ -36,15 +35,15 @@ fi
 
 export CATALINA_HOME CATALINA_BASE CATALINA_OUT CATALINA_PID CATALINA_OPTS JAVA_HOME
 
-if [ "${JAVA_OPTS}" != "" ]; then
-  export JAVA_OPTS
-fi
-
 function start_server {
   echo -n "Starting ${APPNAME}: "
   status -p ${JSVC_PID} ${APPNAME} > /dev/null && failure && exit
   
-  source ${TOMCAT_HOME}/bin/setenv.sh
+  if [ -r /usr/share/${APPNAME}/bin/setenv.sh ]; then
+    source /usr/share/${APPNAME}/bin/setenv.sh
+    export JAVA_OPTS
+  fi
+
   source /etc/tomcat8/tomcat.conf
   source /etc/sysconfig/tomcat8
 
@@ -90,9 +89,14 @@ function stop_server {
 
 #  ${TOMCAT_HOME}/bin/jsvc -pidfile ${JSVC_PID} -stop org.apache.catalinia.startup.Bootstrap
 
-  source ${TOMCAT_HOME}/bin/setenv.sh
+  if [ -r /usr/share/${APPNAME}/bin/setenv.sh ]; then
+    source /usr/share/${APPNAME}/bin/setenv.sh
+    export JAVA_OPTS
+  fi
+
   source /etc/tomcat8/tomcat.conf
   source /etc/sysconfig/tomcat8
+
   /usr/libexec/${APPNAME}/server stop >& ${CATALINA_OUT} 2>&1
 
   if [ $? -eq 0 ]; then
