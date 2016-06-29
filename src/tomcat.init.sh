@@ -33,7 +33,7 @@ if [ -r /etc/sysconfig/${APPNAME} ]; then
   source /etc/sysconfig/${APPNAME}
 fi
 
-export CATALINA_HOME CATALINA_BASE CATALINA_OUT CATALINA_PID CATALINA_OPTS JAVA_HOME
+export CATALINA_HOME CATALINA_BASE CATALINA_OUT CATALINA_PID JAVA_HOME
 
 function start_server {
   echo -n "Starting ${APPNAME}: "
@@ -91,7 +91,6 @@ function stop_server {
 
   if [ -r /usr/share/${APPNAME}/bin/setenv.sh ]; then
     source /usr/share/${APPNAME}/bin/setenv.sh
-    export JAVA_OPTS
   fi
 
   source /etc/tomcat8/tomcat.conf
