@@ -53,21 +53,7 @@ function start_server {
     fi
   fi
 
-  daemon /usr/libexec/${APPNAME}/server start >& ${CATALINA_OUT} 2>&1 &
-
-#  ${TOMCAT_HOME}/bin/jsvc \
-#    -pidfile ${JSVC_PID} \
-#    -procname ${APPNAME} \
-#    -user ${USER} \
-#    -home ${JAVA_HOME} \
-#    -classpath ${JSVC_CP} \
-#    -outfile ${JSVC_OUT} \
-#    -errfile ${JSVC_ERR} \
-#    -Dcatalina.home=${CATALINA_HOME} \
-#    -Dcatalina.base=${CATALINA_BASE} \
-#    -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager \
-#    ${JSVC_LOGGING} ${JAVA_OPTS} ${CATALINA_OPTS} \
-#    org.apache.catalina.startup.Bootstrap
+  daemon --user=${USER} /usr/libexec/${APPNAME}/server start >& ${CATALINA_OUT} 2>&1 &
 
   if [ $? -eq 0 ]; then
     echo $! > ${JSVC_PID}
@@ -86,8 +72,6 @@ function stop_server {
     echo
     exit
   fi
-
-#  ${TOMCAT_HOME}/bin/jsvc -pidfile ${JSVC_PID} -stop org.apache.catalinia.startup.Bootstrap
 
   if [ -r /usr/share/${APPNAME}/bin/setenv.sh ]; then
     source /usr/share/${APPNAME}/bin/setenv.sh
