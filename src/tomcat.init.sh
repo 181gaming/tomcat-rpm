@@ -16,20 +16,20 @@ CATALINA_HOME="${TOMCAT_HOME}"
 CATALINA_BASE="/var/lib/${APPNAME}"
 CATALINA_OUT="/var/log/${APPNAME}/catalina.out"
 CATALINA_PID="/var/run/${APPNAME}/tomcat.pid"
-##CATALINA_OPTS="-Xmx512m -Djava.awt.headless=true"
-JAVA_HOME="/usr/lib/jvm/java"
+##CATALINA_OPTS='-Xmx512m -Djava.awt.headless=true'
+JAVA_HOME='/usr/lib/jvm/java'
 JSVC_PID="/var/run/${APPNAME}/jsvc.pid"
 JSVC_CP=${TOMCAT_HOME}/bin/commons-daemon.jar:${TOMCAT_HOME}/bin/bootstrap.jar:${TOMCAT_HOME}/bin/tomcat-juli.jar
 JSVC_OUT="${CATALINA_OUT}"
 JSVC_ERR="/var/log/${APPNAME}/catalina.err"
 
-if [ -r "${TOMCAT_HOME}/conf/logging.properties" ]; then
+if [[ -r "${TOMCAT_HOME}/conf/logging.properties" ]]; then
   JSVC_LOGGING="-Djava.util.logging.config.file=${TOMCAT_HOME}/conf/logging.properties"
 else
-  JSVC_LOGGING="-Dnop"
+  JSVC_LOGGING='-Dnop'
 fi
 
-if [ -r /etc/sysconfig/${APPNAME} ]; then
+if [[ -r "/etc/sysconfig/${APPNAME}" ]]; then
   source /etc/sysconfig/${APPNAME}
 fi
 
@@ -39,7 +39,7 @@ function start_server {
   printf "%s" "Starting ${APPNAME}: "
   status -p ${JSVC_PID} ${APPNAME} > /dev/null && failure && exit
 
-  if [ -r /usr/share/${APPNAME}/bin/setenv.sh ]; then
+  if [[ -r "/usr/share/${APPNAME}/bin/setenv.sh" ]]; then
     source /usr/share/${APPNAME}/bin/setenv.sh
     export JAVA_OPTS
   fi
@@ -47,15 +47,14 @@ function start_server {
   source /etc/tomcat8/tomcat.conf
   source /etc/sysconfig/tomcat8
 
-  if [ $(id -u) = "0" ]; then
-    if [ ! -d "/var/run/${APPNAME}" ]; then
+  if [[ $(id -u) = "0" ]]; then
+    if [[ ! -d "/var/run/${APPNAME}" ]]; then
       install -m 0750 -o root -g ${USER} -d /var/run/${APPNAME}
     fi
   fi
 
   daemon --user=${USER} /usr/libexec/${APPNAME}/server start >& ${CATALINA_OUT} 2>&1 &
-
-  if [ $? -eq 0 ]; then
+  if [[ $? -eq 0 ]]; then
     echo $! > ${JSVC_PID}
     touch ${LOCKFILE} &&  success
   fi
@@ -69,11 +68,11 @@ function stop_server {
   status -p ${JSVC_PID} ${APPNAME} > /dev/null
   if [[ ! $? -eq 0 ]]; then
     failure
-    printf "\%s" '[ERROR]: pid was not found.'
+    printf "\n%s" '[ERROR]: pid was not found.'
     exit
   fi
 
-  if [ -r /usr/share/${APPNAME}/bin/setenv.sh ]; then
+  if [[ -r "/usr/share/${APPNAME}/bin/setenv.sh" ]]; then
     source /usr/share/${APPNAME}/bin/setenv.sh
   fi
 
@@ -91,7 +90,6 @@ function stop_server {
     pkill -u ${USER} && failure
   fi
 
-
   return
 }
 
@@ -107,7 +105,7 @@ case "$1" in
     start_server
     ;;
   condrestart)
-    [ -e ${LOCKFILE} ] && $0 restart
+    [[ -e "${LOCKFILE}" ]] && $0 restart
     ;;
   status)
     status -p ${JSVC_PID} ${APPNAME} > /dev/null
