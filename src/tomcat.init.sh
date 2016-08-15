@@ -16,13 +16,13 @@ CATALINA_HOME="${TOMCAT_HOME}"
 CATALINA_BASE="/var/lib/${APPNAME}"
 CATALINA_OUT="/var/log/${APPNAME}/catalina.out"
 CATALINA_PID="/var/run/${APPNAME}/tomcat.pid"
-#CATALINA_OPTS="-Xmx512m -Djava.awt.headless=true"
+##CATALINA_OPTS="-Xmx512m -Djava.awt.headless=true"
 JAVA_HOME="/usr/lib/jvm/java"
-
 JSVC_PID="/var/run/${APPNAME}/jsvc.pid"
 JSVC_CP=${TOMCAT_HOME}/bin/commons-daemon.jar:${TOMCAT_HOME}/bin/bootstrap.jar:${TOMCAT_HOME}/bin/tomcat-juli.jar
 JSVC_OUT="${CATALINA_OUT}"
 JSVC_ERR="/var/log/${APPNAME}/catalina.err"
+
 if [ -r "${TOMCAT_HOME}/conf/logging.properties" ]; then
   JSVC_LOGGING="-Djava.util.logging.config.file=${TOMCAT_HOME}/conf/logging.properties"
 else
@@ -36,9 +36,9 @@ fi
 export CATALINA_HOME CATALINA_BASE CATALINA_OUT CATALINA_PID JAVA_HOME
 
 function start_server {
-  echo -n "Starting ${APPNAME}: "
+  printf "%s" "Starting ${APPNAME}: "
   status -p ${JSVC_PID} ${APPNAME} > /dev/null && failure && exit
-  
+
   if [ -r /usr/share/${APPNAME}/bin/setenv.sh ]; then
     source /usr/share/${APPNAME}/bin/setenv.sh
     export JAVA_OPTS
@@ -49,7 +49,7 @@ function start_server {
 
   if [ $(id -u) = "0" ]; then
     if [ ! -d "/var/run/${APPNAME}" ]; then
-      install -m 0755 -o root -g ${USER} -d /var/run/${APPNAME}
+      install -m 0750 -o root -g ${USER} -d /var/run/${APPNAME}
     fi
   fi
 
@@ -60,16 +60,16 @@ function start_server {
     touch ${LOCKFILE} &&  success
   fi
 
-  echo
+  return
 }
 
 function stop_server {
-  echo -n "Stopping ${APPNAME}: "
+  printf "%s" "Stopping ${APPNAME}: "
 
   status -p ${JSVC_PID} ${APPNAME} > /dev/null
-  if [ ! $? -eq 0 ]; then
+  if [[ ! $? -eq 0 ]]; then
     failure
-    echo
+    printf "\%s" '[ERROR]: pid was not found.'
     exit
   fi
 
@@ -81,15 +81,18 @@ function stop_server {
   source /etc/sysconfig/tomcat8
 
   /usr/libexec/${APPNAME}/server stop >& ${CATALINA_OUT} 2>&1
-
-  if [ $? -eq 0 ]; then
-    rm ${JSVC_PID}
-    rm ${LOCKFILE} && success
+  if [[ $? -eq 0 ]]; then
+    printf "\n%s" 'Cleaning up pid files.'
+    sleep 30
+    rm -f ${CATALINA_PID}
+    rm -f ${JSVC_PID}
+    rm -f ${LOCKFILE} && success
   else
-    failure
+    pkill -u ${USER} && failure
   fi
 
-  echo
+
+  return
 }
 
 case "$1" in
@@ -107,10 +110,10 @@ case "$1" in
     [ -e ${LOCKFILE} ] && $0 restart
     ;;
   status)
-    status -p ${JSVC_PID} ${APPNAME}
+    status -p ${JSVC_PID} ${APPNAME} > /dev/null
     ;;
   *)
     echo "Usage: $0 {start|stop|restart|condrestart|status}"
-    exit 1
+    exit 2
     ;;
 esac
