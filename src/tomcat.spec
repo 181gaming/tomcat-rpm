@@ -372,6 +372,8 @@ fi
 %{_javadocdir}/%{name}
 
 %changelog
+* Mon Aug 16 2016 Nicholas Houle <181gaming@gmail.com> - 8.0.30%{?dist}
+- Updated Tomcat to version 8.0.30
 * Mon May 18 2015 James Sumners <james.sumners@gmail.com> - 8.0.22%{?dist}
 - Updated Tomcat to version 8.0.22
 * Tue Feb 03 2015 James Sumners <james.sumners@gmail.com> - 8.0.18%{?dist}
