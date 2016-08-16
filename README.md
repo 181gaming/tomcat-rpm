@@ -34,13 +34,13 @@ for you.
 ##### `dnf`
 
 ```
-sudo dnf install mock ImageMagick-devel ImageMagick
+sudo dnf install rpm-build mock ImageMagick-devel ImageMagick
 ```
 
 ##### `yum`
 
 ```
-sudo yum install mock ImageMagick-devel ImageMagick
+sudo yum install rpm-build mock ImageMagick-devel ImageMagick
 ```
 
 ##### `Gems`
