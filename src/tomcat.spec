@@ -178,7 +178,7 @@ rm -rf %{buildroot}
 %{__install} -d -m 0755 %{buildroot}%{_libexecdir}/%{name}
 
 pushd %{buildroot}/%{homedir}
-    %{__ln_s} %{appdir} webapps
+    # %{__ln_s} %{appdir} webapps
     %{__ln_s} %{confdir} conf
     %{__ln_s} %{logdir} logs
     %{__ln_s} %{tempdir} temp
@@ -357,17 +357,17 @@ fi
 # Tomcat native files
 %attr(0755 root root) /usr/local/apr/
 
-%files manager
-%defattr(0644 root root 0755)
-%{appdir}/manager
+# %files manager
+# %defattr(0644 root root 0755)
+# %{appdir}/manager
 
-%files host-manager
-%defattr(0644 root root 0755)
-%{appdir}/host-manager
+# %files host-manager
+# %defattr(0644 root root 0755)
+# %{appdir}/host-manager
 
-%files javadoc
-%defattr(-,root,root,-)
-%{_javadocdir}/%{name}
+# %files javadoc
+# %defattr(-,root,root,-)
+# %{_javadocdir}/%{name}
 
 %changelog
 * Fri Dec 02 2016 Nicholas Houle <181gaming@gmail.com> - 8.0.30%{?dist}
