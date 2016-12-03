@@ -30,20 +30,20 @@ Dir.chdir('apr') do
     %x(curl -O http://mirror.cc.columbia.edu/pub/software/apache/apr/#{apr}.tar.bz2)
   end
 
-  unless File.exist?("#{apr}-1.src.rpm")
+  unless File.exist?("#{apr}.src.rpm")
     %x(rpmbuild -ts #{apr}.tar.bz2)
     Dir.glob("#{rpmdir}/SRPMS/apr*.rpm").each do |rpm|
       FileUtils.mv(rpm,Dir.pwd)
     end
   end
 
-  unless File.exist?("#{apr}-1.x86_64.rpm")
-    %x(mock -r epel-6-x86_64 --resultdir=#{Dir.pwd} #{apr}-1.src.rpm)
+  unless File.exist?("#{apr}.x86_64.rpm")
+    %x(mock -r epel-6-x86_64 --resultdir=#{Dir.pwd} #{apr}.src.rpm)
   end
 end
 
 %x(mock -r epel-6-x86_64 --buildsrpm --resultdir=`pwd`/dist --source=`pwd`/src --spec=`pwd`/src/tomcat.spec)
-%x(mock -r epel-6-x86_64 --install `pwd`/apr/*4.rpm)
+%x(mock -r epel-6-x86_64 --install `pwd`/apr/*5.rpm)
 %x(mock -r epel-6-x86_64 --resultdir=`pwd`/dist --no-clean dist/*el6*.src.rpm)
 
 # Need v33 for EL6
