@@ -200,7 +200,7 @@ popd
 %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/bin/*.sh %{buildroot}%{bindir}
 %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/conf/*.{policy,properties,xml} %{buildroot}%{confdir}
 %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/lib/*.jar %{buildroot}%{libdir}
-%{__cp} -a %{_builddir}/apache-%{appname}-%{version}/webapps/ %{buildroot}%{appdir}
+# %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/webapps/{ROOT,manager,host-manager} %{buildroot}%{appdir}
 
 # javadoc
 %{__sed} -e "s|\@\@\@TCHOME\@\@\@|%{homedir}|g" \
