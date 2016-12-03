@@ -7,7 +7,7 @@ unless File.directory?('dist')
 end
 
 src_dir = 'src'
-el6_version = '8.0.33'
+el6_version = '8.0.30'
 el7_version = '8.0.33'
 el6_target = "apache-tomcat-#{el6_version}.tar.gz"
 el7_target = "apache-tomcat-#{el7_version}.tar.gz"
