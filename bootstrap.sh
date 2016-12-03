@@ -2,7 +2,7 @@
 
 sudo yum update -y
 sudo yum install -y epel-release
-sudo yum install rpm-build mock ImageMagick-devel ImageMagick
+sudo yum install -y rpm-build mock ImageMagick-devel ImageMagick
 sudo usermod -a -G mock vagrant
 
 cd /opt/VBoxGuestAdditions-*/init
