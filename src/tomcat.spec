@@ -77,7 +77,7 @@ BuildRequires: java-devel >= 1.8
 BuildRequires: jdk >= 1.8
 %endif
 
-#BuildRequires: apr-devel >= 0:1.5.0
+BuildRequires: apr-devel >= 0:1.4.0
 BuildRequires: openssl-devel >= 0:0.9.7
 BuildRequires: autoconf, libtool, doxygen
 BuildRequires: libcap-devel
