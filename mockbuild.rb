@@ -30,7 +30,7 @@ Dir.chdir('apr') do
     %x(curl -O http://mirror.cc.columbia.edu/pub/software/apache/apr/#{apr}.tar.bz2)
   end
 
-  unless File.exist?("#{apr}.src.rpm")
+  unless File.exist?("#{apr}-1.src.rpm")
     %x(rpmbuild -ts #{apr}.tar.bz2)
     Dir.glob("#{rpmdir}/SRPMS/apr*.rpm").each do |rpm|
       FileUtils.mv(rpm,Dir.pwd)
@@ -38,7 +38,7 @@ Dir.chdir('apr') do
   end
 
   unless File.exist?("#{apr}.x86_64.rpm")
-    %x(mock -r epel-6-x86_64 --resultdir=#{Dir.pwd} #{apr}.src.rpm)
+    %x(mock -r epel-6-x86_64 --resultdir=#{Dir.pwd} #{apr}-1.src.rpm)
   end
 end
 
