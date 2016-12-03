@@ -43,7 +43,7 @@ Dir.chdir('apr') do
 end
 
 %x(mock -r epel-6-x86_64 --buildsrpm --resultdir=`pwd`/dist --source=`pwd`/src --spec=`pwd`/src/tomcat.spec)
-%x(mock -r epel-6-x86_64 --install `pwd`/apr/*5.rpm)
+%x(mock -r epel-6-x86_64 --install `pwd`/apr/*4.rpm)
 %x(mock -r epel-6-x86_64 --resultdir=`pwd`/dist --no-clean dist/*el6*.src.rpm)
 
 # Need v33 for EL6
