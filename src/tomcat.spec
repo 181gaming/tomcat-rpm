@@ -4,9 +4,9 @@
 # with the native OpenSSL
 
 %if 0%{?el6:1}
-%define micro_version 35
+%define micro_version 39
 %else
-%define micro_version 35
+%define micro_version 39
 %endif
 
 %define appname tomcat
