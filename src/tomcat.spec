@@ -300,7 +300,6 @@ fi
 
 %files
 %{bindir}
-%{homedir}/webapps
 
 %defattr(0664,root,tomcat,0755)
 %doc {LICENSE,NOTICE,RELEASE*}
