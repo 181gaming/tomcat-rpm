@@ -66,7 +66,7 @@ Requires: java-devel >= 1.8
 Requires: jdk >= 1.8
 %endif
 
-Requires: apr >= 0:1.5.0
+Requires: apr >= 0:1.4.0
 Requires: libtool
 Requires: libcap
 
@@ -200,7 +200,7 @@ popd
 %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/bin/*.sh %{buildroot}%{bindir}
 %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/conf/*.{policy,properties,xml} %{buildroot}%{confdir}
 %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/lib/*.jar %{buildroot}%{libdir}
-%{__cp} -a %{_builddir}/apache-%{appname}-%{version}/webapps/{ROOT,manager,host-manager} %{buildroot}%{appdir}
+%{__cp} -a %{_builddir}/apache-%{appname}-%{version}/webapps/{ROOT} %{buildroot}%{appdir}
 
 # javadoc
 %{__sed} -e "s|\@\@\@TCHOME\@\@\@|%{homedir}|g" \
@@ -361,7 +361,6 @@ fi
 %defattr(0644 root root 0755)
 %{appdir}/manager
 
-
 %files host-manager
 %defattr(0644 root root 0755)
 %{appdir}/host-manager
@@ -371,6 +370,8 @@ fi
 %{_javadocdir}/%{name}
 
 %changelog
+* Mon Dec 03 2016 Nicholas Houle <181gaming@gmail.com> - 8.0.30%{?dist}
+- Removed webapps host-manager and manager
 * Mon Aug 16 2016 Nicholas Houle <181gaming@gmail.com> - 8.0.30%{?dist}
 - Updated Tomcat to version 8.0.30
 * Mon May 18 2015 James Sumners <james.sumners@gmail.com> - 8.0.22%{?dist}
