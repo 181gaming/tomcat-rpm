@@ -7,8 +7,8 @@ unless File.directory?('dist')
 end
 
 src_dir = 'src'
-el6_version = '8.0.35'
-el7_version = '8.0.35'
+el6_version = '8.0.33'
+el7_version = '8.0.33'
 el6_target = "apache-tomcat-#{el6_version}.tar.gz"
 el7_target = "apache-tomcat-#{el7_version}.tar.gz"
 url_src = 'http://archive.apache.org/dist/tomcat/tomcat-8/v%%VERSION%%/bin/apache-tomcat-%%VERSION%%.tar.gz'
@@ -21,7 +21,7 @@ end
 
 # Also need a newer version of APR for EL6
 
-apr = 'apr-util-1.5.4'
+apr = 'apr-1.5.2'
 
 FileUtils.mkdir('apr') unless File.directory?('apr')
 
