@@ -60,24 +60,24 @@ BuildArch: x86_64
 
 # The _jdk_require is passed via `rpmbuild --define "_jdk_require ..."`
 %if 0%{?rhel}%{?fedora}
-Requires: java >= 1.7
-Requires: java-devel >= 1.7
+Requires: java >= 1.8
+Requires: java-devel >= 1.8
 %else
-Requires: jdk >= 1.7
+Requires: jdk >= 1.8
 %endif
 
-Requires: apr >= 0:1.4.0
+Requires: apr >= 0:1.5.0
 Requires: libtool
 Requires: libcap
 
 %if 0%{?rhel}%{?fedora}
-BuildRequires: java >= 1.7
-BuildRequires: java-devel >= 1.7
+BuildRequires: java >= 1.8
+BuildRequires: java-devel >= 1.8
 %else
-BuildRequires: jdk >= 1.7
+BuildRequires: jdk >= 1.8
 %endif
 
-BuildRequires: apr-devel >= 0:1.4.0
+BuildRequires: apr-devel >= 0:1.5.0
 BuildRequires: openssl-devel >= 0:0.9.7
 BuildRequires: autoconf, libtool, doxygen
 BuildRequires: libcap-devel
