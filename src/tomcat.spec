@@ -370,7 +370,7 @@ fi
 %{_javadocdir}/%{name}
 
 %changelog
-* Fri Dec 03 2016 Nicholas Houle <181gaming@gmail.com> - 8.0.30%{?dist}
+* Fri Dec 02 2016 Nicholas Houle <181gaming@gmail.com> - 8.0.30%{?dist}
 - Removed webapps hostmanager and manager
 * Tue Aug 16 2016 Nicholas Houle <181gaming@gmail.com> - 8.0.30%{?dist}
 - Updated Tomcat to version 8.0.30
