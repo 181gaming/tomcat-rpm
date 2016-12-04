@@ -82,7 +82,7 @@ function stop_server {
   /usr/libexec/${APPNAME}/server stop >& ${CATALINA_OUT} 2>&1
   if [[ $? -eq 0 ]]; then
     printf "\n%s" 'Cleaning up pid files.'
-    sleep 30
+    sleep 20
     rm -f ${CATALINA_PID}
     rm -f ${JSVC_PID}
     rm -f ${LOCKFILE} && success
