@@ -8,4 +8,4 @@ CATALINA_OPTS="-Xmx512m -Djava.awt.headless=true"
 # requires it.
 # See http://stackoverflow.com/questions/11222365/catalina-opts-vs-java-opts-what-is-the-difference
 # for more information
-JAVA_OPTS="${JAVA_OPTS} -Djavax.sql.DataSource.Factory=org.apache.commons.dbcp.BasicDataSourceFactory"
+JAVA_OPTS="-Djavax.sql.DataSource.Factory=org.apache.commons.dbcp.BasicDataSourceFactory"
