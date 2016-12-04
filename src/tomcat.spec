@@ -353,7 +353,7 @@ fi
 %{homedir}/work
 %{homedir}/logs
 %{homedir}/conf
-%{homedir}/webapps
+#%{homedir}/webapps
 
 # Tomcat native files
 %attr(0755 root root) /usr/local/apr/
