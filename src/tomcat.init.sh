@@ -108,7 +108,7 @@ case "$1" in
     [[ -e "${LOCKFILE}" ]] && $0 restart
     ;;
   status)
-    status -p ${JSVC_PID} ${APPNAME} > /dev/null
+    status -p ${JSVC_PID} ${APPNAME}
     ;;
   *)
     echo "Usage: $0 {start|stop|restart|condrestart|status}"
