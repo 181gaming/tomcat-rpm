@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 sudo yum update -y
-sudo yum install -y epel-release
+sudo yum install -y vim git epel-release
 sudo yum install -y rpm-build mock ImageMagick-devel ImageMagick redhat-lsb-core
 sudo usermod -a -G mock vagrant
 
