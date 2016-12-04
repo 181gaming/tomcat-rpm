@@ -178,7 +178,7 @@ rm -rf %{buildroot}
 %{__install} -d -m 0755 %{buildroot}%{_libexecdir}/%{name}
 
 pushd %{buildroot}/%{homedir}
-    # %{__ln_s} %{appdir} webapps
+    %{__ln_s} %{appdir} webapps
     %{__ln_s} %{confdir} conf
     %{__ln_s} %{logdir} logs
     %{__ln_s} %{tempdir} temp
@@ -353,7 +353,7 @@ fi
 %{homedir}/work
 %{homedir}/logs
 %{homedir}/conf
-#%{homedir}/webapps
+%{homedir}/webapps
 
 # Tomcat native files
 %attr(0755 root root) /usr/local/apr/
