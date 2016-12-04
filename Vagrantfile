@@ -9,6 +9,7 @@ Vagrant.configure("2") do |c|
     v.vm.provider :virtualbox do |vb|
       vb.customize ['modifyvm', :id, '--memory', '1024', '--cpus', '1']
     end
+    v.vm.provision :shell, path: "bootstrap.sh"
   end
 
   c.vm.define 'centos66' do |v|
@@ -20,5 +21,6 @@ Vagrant.configure("2") do |c|
     v.vm.provider :virtualbox do |vb|
       vb.customize ['modifyvm', :id, '--memory', '1024', '--cpus', '1']
     end
+    v.vm.provision :shell, path: "bootstrap.sh"
   end
 end

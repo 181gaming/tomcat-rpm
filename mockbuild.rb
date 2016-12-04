@@ -37,7 +37,7 @@ Dir.chdir('apr') do
     end
   end
 
-  unless File.exist?("#{apr}-1.x86_64.rpm")
+  unless File.exist?("#{apr}.x86_64.rpm")
     %x(mock -r epel-6-x86_64 --resultdir=#{Dir.pwd} #{apr}-1.src.rpm)
   end
 end

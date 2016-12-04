@@ -200,7 +200,7 @@ popd
 %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/bin/*.sh %{buildroot}%{bindir}
 %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/conf/*.{policy,properties,xml} %{buildroot}%{confdir}
 %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/lib/*.jar %{buildroot}%{libdir}
-%{__cp} -a %{_builddir}/apache-%{appname}-%{version}/webapps/{ROOT,manager,host-manager} %{buildroot}%{appdir}
+# %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/webapps/{ROOT,manager,host-manager} %{buildroot}%{appdir}
 
 # javadoc
 %{__sed} -e "s|\@\@\@TCHOME\@\@\@|%{homedir}|g" \
@@ -353,25 +353,27 @@ fi
 %{homedir}/work
 %{homedir}/logs
 %{homedir}/conf
+%{homedir}/webapps
 
 # Tomcat native files
 %attr(0755 root root) /usr/local/apr/
 
-%files manager
-%defattr(0644 root root 0755)
-%{appdir}/manager
+# %files manager
+# %defattr(0644 root root 0755)
+# %{appdir}/manager
 
-
-%files host-manager
-%defattr(0644 root root 0755)
-%{appdir}/host-manager
+# %files host-manager
+# %defattr(0644 root root 0755)
+# %{appdir}/host-manager
 
 %files javadoc
 %defattr(-,root,root,-)
 %{_javadocdir}/%{name}
 
 %changelog
-* Mon Aug 16 2016 Nicholas Houle <181gaming@gmail.com> - 8.0.30%{?dist}
+* Fri Dec 02 2016 Nicholas Houle <181gaming@gmail.com> - 8.0.30%{?dist}
+- Removed webapps hostmanager and manager
+* Tue Aug 16 2016 Nicholas Houle <181gaming@gmail.com> - 8.0.30%{?dist}
 - Updated Tomcat to version 8.0.30
 * Mon May 18 2015 James Sumners <james.sumners@gmail.com> - 8.0.22%{?dist}
 - Updated Tomcat to version 8.0.22
@@ -393,4 +395,3 @@ fi
 - First packaging of Apache Tomcat for eCivis apps
 - TODO Tomcat native connector
 - TODO Support for multiple instances
-
