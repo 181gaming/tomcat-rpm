@@ -353,7 +353,7 @@ fi
 %{homedir}/work
 %{homedir}/logs
 %{homedir}/conf
-# %{homedir}/webapps
+%{homedir}/webapps
 
 # Tomcat native files
 %attr(0755 root root) /usr/local/apr/
@@ -366,9 +366,9 @@ fi
 # %defattr(0644 root root 0755)
 # %{appdir}/host-manager
 
-# %files javadoc
-# %defattr(-,root,root,-)
-# %{_javadocdir}/%{name}
+%files javadoc
+%defattr(-,root,root,-)
+%{_javadocdir}/%{name}
 
 %changelog
 * Fri Dec 02 2016 Nicholas Houle <181gaming@gmail.com> - 8.0.30%{?dist}
