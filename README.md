@@ -46,7 +46,7 @@ sudo yum install rpm-build mock ImageMagick-devel ImageMagick
 ##### `Gems`
 
 ```
-gem install fileutils
+gem install fileutils ruby-build
 ```
 
 
