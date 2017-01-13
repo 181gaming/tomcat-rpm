@@ -23,6 +23,22 @@ for you.
 ### Setup requirements
 
 
+##### `dnf`
+
+```
+sudo dnf ruby install rpm-build mock ImageMagick-devel ImageMagick
+```
+
+-----
+
+##### `yum`
+
+```
+sudo yum ruby install rpm-build mock ImageMagick-devel ImageMagick
+```
+
+-----
+
 ##### `rvm`
 
 ```
@@ -37,17 +53,7 @@ command curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
 
 To start using RVM you need to run `source /home/vagrant/.rvm/scripts/rvm`
 
-##### `dnf`
-
-```
-sudo dnf ruby install rpm-build mock ImageMagick-devel ImageMagick
-```
-
-##### `yum`
-
-```
-sudo yum ruby install rpm-build mock ImageMagick-devel ImageMagick
-```
+-----
 
 ##### `Gems`
 
