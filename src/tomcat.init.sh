@@ -44,8 +44,8 @@ function start_server {
     export JAVA_OPTS
   fi
 
-  source /etc/tomcat8/tomcat.conf
-  source /etc/sysconfig/tomcat8
+  #source /etc/tomcat8/tomcat.conf
+  #source /etc/sysconfig/tomcat8
 
   if [[ $(id -u) = "0" ]]; then
     if [[ ! -d "/var/run/${APPNAME}" ]]; then
