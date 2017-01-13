@@ -90,6 +90,7 @@ function stop_server {
     printf "\n"
   else
     pkill -u ${USER} && failure
+    printf "\n"
   fi
 
   return
