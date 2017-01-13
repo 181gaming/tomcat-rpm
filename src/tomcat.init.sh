@@ -57,6 +57,7 @@ function start_server {
   if [[ $? -eq 0 ]]; then
     echo $! > ${JSVC_PID}
     touch ${LOCKFILE} &&  success
+    printf "\n"
   fi
 
   return
@@ -86,6 +87,7 @@ function stop_server {
     rm -f ${CATALINA_PID}
     rm -f ${JSVC_PID}
     rm -f ${LOCKFILE} && success
+    printf "\n"
   else
     pkill -u ${USER} && failure
   fi
