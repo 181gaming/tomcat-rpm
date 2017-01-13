@@ -26,6 +26,10 @@ for you.
 ##### `rvm`
 
 ```
+command curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
+```
+
+```
 # https://rvm.io/rvm/install
 
 \curl -sSL https://get.rvm.io | bash -s stable --ruby
@@ -34,13 +38,13 @@ for you.
 ##### `dnf`
 
 ```
-sudo dnf install rpm-build mock ImageMagick-devel ImageMagick
+sudo dnf ruby install rpm-build mock ImageMagick-devel ImageMagick
 ```
 
 ##### `yum`
 
 ```
-sudo yum install rpm-build mock ImageMagick-devel ImageMagick
+sudo yum ruby install rpm-build mock ImageMagick-devel ImageMagick
 ```
 
 ##### `Gems`
