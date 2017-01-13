@@ -53,12 +53,16 @@ command curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
 
 To start using RVM you need to run `source /home/vagrant/.rvm/scripts/rvm`
 
+```
+rvm install ruby-build
+```
+
 -----
 
 ##### `Gems`
 
 ```
-gem install fileutils ruby-build
+gem install fileutils
 ```
 
 
