@@ -88,24 +88,23 @@ Implementation for the Java Servlet and JavaServer Pages technologies.
 The Java Servlet and JavaServer Pages specifications are developed by
 Sun under the Java Community Process.
 
+#%package manager
+#Summary: The management web application of Apache Tomcat.
+#Group: System Environment/Applications
+#Requires: %{name} = %{version}-%{release}
+#BuildArch: noarch
 
-%package manager
-Summary: The management web application of Apache Tomcat.
-Group: System Environment/Applications
-Requires: %{name} = %{version}-%{release}
-BuildArch: noarch
+#%description manager
+#The management web application of Apache Tomcat.
 
-%description manager
-The management web application of Apache Tomcat.
+#%package host-manager
+#Summary: The host-management web application of Apache Tomcat.
+#Group: System Environment/Applications
+#Requires: %{name} = %{version}-%{release}
+#BuildArch: noarch
 
-%package host-manager
-Summary: The host-management web application of Apache Tomcat.
-Group: System Environment/Applications
-Requires: %{name} = %{version}-%{release}
-BuildArch: noarch
-
-%description host-manager
-The host-management web application of Apache Tomcat.
+#%description host-manager
+#The host-management web application of Apache Tomcat.
 
 %package javadoc
 Group: Documentation
@@ -200,7 +199,7 @@ popd
 %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/bin/*.sh %{buildroot}%{bindir}
 %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/conf/*.{policy,properties,xml} %{buildroot}%{confdir}
 %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/lib/*.jar %{buildroot}%{libdir}
-# %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/webapps/{ROOT,manager,host-manager} %{buildroot}%{appdir}
+#%{__cp} -a %{_builddir}/apache-%{appname}-%{version}/webapps/{ROOT,manager,host-manager} %{buildroot}%{appdir}
 
 # javadoc
 %{__sed} -e "s|\@\@\@TCHOME\@\@\@|%{homedir}|g" \
