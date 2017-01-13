@@ -370,6 +370,10 @@ fi
 %{_javadocdir}/%{name}
 
 %changelog
+* Thu Jan 12 2017 Nicholas Houle <181gaming@gmail.com> - 8.0.30%{?dist}
+- Removed webapps ROOT, host-manager and manager.
+- Set security_manager to false, default.
+- Fixed tomcat init script and JAVA_OPTS.
 * Fri Dec 02 2016 Nicholas Houle <181gaming@gmail.com> - 8.0.30%{?dist}
 - Removed webapps hostmanager and manager
 * Tue Aug 16 2016 Nicholas Houle <181gaming@gmail.com> - 8.0.30%{?dist}
