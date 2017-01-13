@@ -2,7 +2,7 @@
 
 sudo yum update -y
 sudo yum install -y vim git epel-release
-sudo yum install -y rpm-build mock ImageMagick-devel ImageMagick redhat-lsb-core
+sudo yum install -y ruby rpm-build mock ImageMagick-devel ImageMagick redhat-lsb-core
 sudo usermod -a -G mock vagrant
 
 cd /opt/VBoxGuestAdditions-*/init
