@@ -62,7 +62,7 @@ rvm install ruby-build
 ##### `Gems`
 
 ```
-gem install fileutils
+gem install fileutils && gem update
 ```
 
 
