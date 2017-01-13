@@ -35,6 +35,8 @@ command curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
 \curl -sSL https://get.rvm.io | bash -s stable --ruby
 ```
 
+To start using RVM you need to run `source /home/vagrant/.rvm/scripts/rvm`
+
 ##### `dnf`
 
 ```
