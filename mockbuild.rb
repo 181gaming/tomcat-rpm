@@ -2,9 +2,8 @@
 
 require 'fileutils'
 
-unless File.directory?('dist')
-  FileUtils.mkdir('dist')
-end
+FileUtils.mkdir('dist') unless File.directory?('dist')
+FileUtils.mkdir('apr') unless File.directory?('apr')
 
 src_dir = 'src'
 el6_version = '8.0.30'
@@ -14,16 +13,13 @@ el7_target = "apache-tomcat-#{el7_version}.tar.gz"
 url_src = 'http://archive.apache.org/dist/tomcat/tomcat-8/v%%VERSION%%/bin/apache-tomcat-%%VERSION%%.tar.gz'
 rpmdir = %x(rpm --eval %{_topdir}).strip
 
+# Also need a newer version of APR for EL6
+apr = 'apr-1.5.2'
+
 # Need v30 for EL6
 unless File.exist?(File.join(src_dir,el6_target))
   %x(curl -o #{File.join(src_dir,el6_target)} #{url_src.gsub('%%VERSION%%',el6_version)})
 end
-
-# Also need a newer version of APR for EL6
-
-apr = 'apr-1.5.2'
-
-FileUtils.mkdir('apr') unless File.directory?('apr')
 
 Dir.chdir('apr') do
   unless File.exist?("#{apr}.tar.bz2")
@@ -46,7 +42,7 @@ end
 %x(mock -r epel-6-x86_64 --install `pwd`/apr/*4.rpm)
 %x(mock -r epel-6-x86_64 --resultdir=`pwd`/dist --no-clean dist/*el6*.src.rpm)
 
-# Need v33 for EL6
+# Need v33 for EL7
 unless File.exist?(File.join(src_dir,el7_target))
   %x(curl -o #{File.join(src_dir,el7_target)} #{url_src.gsub('%%VERSION%%',el7_version)})
 end
