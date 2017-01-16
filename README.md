@@ -38,7 +38,7 @@ sudo yum install epel-release
 ```
 
 ```
-sudo yum ruby install rpm-build mock ImageMagick-devel ImageMagick
+sudo yum install ruby rpm-build mock ImageMagick-devel ImageMagick
 ```
 
 -----
