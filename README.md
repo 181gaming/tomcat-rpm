@@ -34,6 +34,10 @@ sudo dnf ruby install rpm-build mock ImageMagick-devel ImageMagick
 ##### `yum`
 
 ```
+sudo yum install epel-release
+```
+
+```
 sudo yum ruby install rpm-build mock ImageMagick-devel ImageMagick
 ```
 
