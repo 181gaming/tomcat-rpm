@@ -34,7 +34,7 @@
 
 Name: tomcat8
 Version: %{major_version}.%{minor_version}.%{micro_version}
-Release: 0%{?dist}
+Release: 2%{?dist}
 Epoch: 0
 Summary: Open source software implementation of the Java Servlet and JavaServer Pages technologies.
 Group: System Environment/Daemons
@@ -55,6 +55,7 @@ Source19: tomcat-preamble
 Source20: tomcat-server
 Source22: tomcat-tool-wrapper.script
 Source23: tomcat.wrapper
+Source24: logging.properties
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildArch: x86_64
 
@@ -82,30 +83,34 @@ BuildRequires: openssl-devel >= 0:0.9.7
 BuildRequires: autoconf, libtool, doxygen
 BuildRequires: libcap-devel
 
+%if 0%{?rhel} >= 7 || 0%{?fedora} >= 20
+BuildRequires: systemd-units
+%endif
+
+
 %description
 Tomcat is the servlet container that is used in the official Reference
 Implementation for the Java Servlet and JavaServer Pages technologies.
 The Java Servlet and JavaServer Pages specifications are developed by
 Sun under the Java Community Process.
 
+#%package manager
+#Summary: The management web application of Apache Tomcat.
+#Group: System Environment/Applications
+#Requires: %{name} = %{version}-%{release}
+#BuildArch: noarch
 
-%package manager
-Summary: The management web application of Apache Tomcat.
-Group: System Environment/Applications
-Requires: %{name} = %{version}-%{release}
-BuildArch: noarch
+#%description manager
+#The management web application of Apache Tomcat.
 
-%description manager
-The management web application of Apache Tomcat.
+#%package host-manager
+#Summary: The host-management web application of Apache Tomcat.
+#Group: System Environment/Applications
+#Requires: %{name} = %{version}-%{release}
+#BuildArch: noarch
 
-%package host-manager
-Summary: The host-management web application of Apache Tomcat.
-Group: System Environment/Applications
-Requires: %{name} = %{version}-%{release}
-BuildArch: noarch
-
-%description host-manager
-The host-management web application of Apache Tomcat.
+#%description host-manager
+#The host-management web application of Apache Tomcat.
 
 %package javadoc
 Group: Documentation
@@ -146,6 +151,7 @@ cd -
 # build initial path structure
 rm -rf %{buildroot}
 
+%{__install} -d -m 0755 %{buildroot}
 %{__install} -d -m 0755 %{buildroot}%{_bindir}
 %{__install} -d -m 0755 %{buildroot}%{_sbindir}
 %{__install} -d -m 0755 %{buildroot}%{_javadocdir}/%{name}
@@ -198,9 +204,9 @@ popd
 # Copy Tomcat files to package root
 %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/bin/*.{jar,xml} %{buildroot}%{bindir}
 %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/bin/*.sh %{buildroot}%{bindir}
-%{__cp} -a %{_builddir}/apache-%{appname}-%{version}/conf/*.{policy,properties,xml} %{buildroot}%{confdir}
+%{__cp} -a %{_builddir}/apache-%{appname}-%{version}/conf/*.{policy,xml} %{buildroot}%{confdir}
 %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/lib/*.jar %{buildroot}%{libdir}
-# %{__cp} -a %{_builddir}/apache-%{appname}-%{version}/webapps/{ROOT,manager,host-manager} %{buildroot}%{appdir}
+#%{__cp} -a %{_builddir}/apache-%{appname}-%{version}/webapps/{ROOT,manager,host-manager} %{buildroot}%{appdir}
 
 # javadoc
 %{__sed} -e "s|\@\@\@TCHOME\@\@\@|%{homedir}|g" \
@@ -216,13 +222,14 @@ popd
 
 %if 0%{?rhel} >= 7 || 0%{?fedora} >= 20
 %{__install} -m 0644 %{SOURCE16} \
-    %{buildroot}%{_unitdir}/%{name}-jsvc.service
+%{buildroot}%{_unitdir}/%{name}-jsvc.service
 %{__install} -m 0644 %{SOURCE7} \
-    %{buildroot}%{_unitdir}/%{name}.service
-%{__install} -m 0644 %{SOURCE18} %{buildroot}%{_unitdir}/%{name}@.service
+%{buildroot}%{_unitdir}/%{name}.service
+%{__install} -m 0644 %{SOURCE18} \
+%{buildroot}%{_unitdir}/%{name}@.service
 %else
 %{__install} -m 0644 %{SOURCE2} \
-    %{buildroot}%{_initddir}/%{name}
+%{buildroot}%{_initddir}/%{name}
 %endif
 
 %{__sed} -e "s|\@\@\@TCLOG\@\@\@|%{logdir}|g" %{SOURCE3} \
@@ -239,6 +246,7 @@ popd
 %{__install} -m 0644 %{SOURCE15} %{buildroot}%{_libexecdir}/%{name}/functions
 %{__install} -m 0644 %{SOURCE19} %{buildroot}%{_libexecdir}/%{name}/preamble
 %{__install} -m 0644 %{SOURCE20} %{buildroot}%{_libexecdir}/%{name}/server
+%{__install} -m 0644 %{SOURCE24} %{buildroot}%{confdir}/logging.properties
 
 # Substitute libnames in catalina-tasks.xml
 sed -i \
@@ -326,7 +334,7 @@ fi
 %attr(0755,root,tomcat) %dir %{basedir}
 %attr(0755,root,tomcat) %dir %{confdir}
 %defattr(0664,tomcat,root,0770)
-%attr(0770,tomcat,root) %dir %{logdir}
+%attr(0770,tomcat,tomcat) %dir %{logdir}
 %defattr(0664,root,tomcat,0770)
 %attr(0660,tomcat,tomcat) %{logdir}/catalina.out
 %attr(0644,tomcat,tomcat) %{_localstatedir}/run/%{name}.pid
@@ -346,6 +354,7 @@ fi
 %attr(0664,tomcat,tomcat) %config(noreplace) %{confdir}/server.xml
 %attr(0660,tomcat,tomcat) %config(noreplace) %{confdir}/tomcat-users.xml
 %attr(0664,tomcat,tomcat) %config(noreplace) %{confdir}/web.xml
+%attr(0664,tomcat,tomcat) %config %{confdir}/logging.properties
 %dir %{homedir}
 %{_prefix}/lib/tmpfiles.d/%{name}.conf
 %{homedir}/lib
@@ -371,6 +380,12 @@ fi
 %{_javadocdir}/%{name}
 
 %changelog
+* Fri Jan 14 2017 Nicholas Houle <181gaming@gmail.com> - 8.0.30%{?dist}
+- Clean up init script and update logging.properties file
+* Fri Jan 13 2017 Nicholas Houle <181gaming@gmail.com> - 8.0.30%{?dist}
+- Removed webapps ROOT, host-manager and manager
+- Set security_manager to false, default
+- Fixed tomcat init script and JAVA_OPTS
 * Fri Dec 02 2016 Nicholas Houle <181gaming@gmail.com> - 8.0.30%{?dist}
 - Removed webapps hostmanager and manager
 * Tue Aug 16 2016 Nicholas Houle <181gaming@gmail.com> - 8.0.30%{?dist}

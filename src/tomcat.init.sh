@@ -4,6 +4,11 @@
 #
 # chkconfig: 345 85 15
 # description: Apache Tomcat Java Servlets and JSP server
+# Privilege check
+if (( $EUID != 0 )); then
+  echo "[INFO]: Please use with sudo, insufficient privileges."
+  exit
+fi
 
 source /etc/rc.d/init.d/functions
 
@@ -16,7 +21,6 @@ CATALINA_HOME="${TOMCAT_HOME}"
 CATALINA_BASE="/var/lib/${APPNAME}"
 CATALINA_OUT="/var/log/${APPNAME}/catalina.out"
 CATALINA_PID="/var/run/${APPNAME}/tomcat.pid"
-##CATALINA_OPTS='-Xmx512m -Djava.awt.headless=true'
 JAVA_HOME='/usr/lib/jvm/java'
 JSVC_PID="/var/run/${APPNAME}/jsvc.pid"
 JSVC_CP=${TOMCAT_HOME}/bin/commons-daemon.jar:${TOMCAT_HOME}/bin/bootstrap.jar:${TOMCAT_HOME}/bin/tomcat-juli.jar
@@ -44,8 +48,8 @@ function start_server {
     export JAVA_OPTS
   fi
 
-  source /etc/tomcat8/tomcat.conf
-  source /etc/sysconfig/tomcat8
+  #source /etc/tomcat8/tomcat.conf
+  #source /etc/sysconfig/tomcat8
 
   if [[ $(id -u) = "0" ]]; then
     if [[ ! -d "/var/run/${APPNAME}" ]]; then
@@ -56,7 +60,8 @@ function start_server {
   daemon --user=${USER} /usr/libexec/${APPNAME}/server start >& ${CATALINA_OUT} 2>&1 &
   if [[ $? -eq 0 ]]; then
     echo $! > ${JSVC_PID}
-    touch ${LOCKFILE} &&  success
+    touch ${LOCKFILE} > /dev/null && success
+    printf "\n"
   fi
 
   return
@@ -68,16 +73,15 @@ function stop_server {
   status -p ${JSVC_PID} ${APPNAME} > /dev/null
   if [[ ! $? -eq 0 ]]; then
     failure
-    printf "\n%s" '[ERROR]: pid was not found.'
-    exit
+    printf "\n%s\n" "[ERROR]: ${APPNAME} pid was not found." && exit
   fi
 
   if [[ -r "/usr/share/${APPNAME}/bin/setenv.sh" ]]; then
     source /usr/share/${APPNAME}/bin/setenv.sh
   fi
 
-  source /etc/tomcat8/tomcat.conf
-  source /etc/sysconfig/tomcat8
+  #source /etc/tomcat8/tomcat.conf
+  #source /etc/sysconfig/tomcat8
 
   /usr/libexec/${APPNAME}/server stop >& ${CATALINA_OUT} 2>&1
   if [[ $? -eq 0 ]]; then
@@ -86,8 +90,10 @@ function stop_server {
     rm -f ${CATALINA_PID}
     rm -f ${JSVC_PID}
     rm -f ${LOCKFILE} && success
+    printf "\n"
   else
     pkill -u ${USER} && failure
+    printf "\n"
   fi
 
   return
