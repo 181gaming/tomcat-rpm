@@ -2,9 +2,11 @@
 # Update system
 yum update -y
 
-yum install -y vim git epel-release
-yum install -y rpm-build mock ImageMagick-devel ImageMagick redhat-lsb-core
-usermod -a -G mock vagrant
+sudo yum update -y
+sudo yum install -y vim git epel-release
+sudo yum install -y ruby rpm-build mock ImageMagick-devel ImageMagick redhat-lsb-core
+sudo usermod -a -G mock vagrant
+
 
 # Update VBox guest additions
 #cd /opt/VBoxGuestAdditions-*/init
